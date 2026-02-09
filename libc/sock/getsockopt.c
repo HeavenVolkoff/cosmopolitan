@@ -45,8 +45,8 @@
  * @see libc/sysv/consts.sh for tuning catalogue
  * @see setsockopt()
  */
-int getsockopt(int fd, int level, int optname, void *out_opt_optval,
-               uint32_t *out_optlen) {
+int getsockopt(int fd, int level, int optname, void* out_opt_optval,
+               uint32_t* out_optlen) {
   int rc;
 
   if (level == -1 || !optname) {
@@ -57,7 +57,7 @@ int getsockopt(int fd, int level, int optname, void *out_opt_optval,
     rc = sys_getsockopt(fd, level, optname, out_opt_optval, out_optlen);
     if (level == SOL_SOCKET && optname == SO_ERROR) {
       assert(*out_optlen == sizeof(int));
-      *(int *)out_opt_optval = __errno_host2linux(*((int*)out_opt_optval));
+      *(int*)out_opt_optval = __errno_host2linux(*((int*)out_opt_optval));
     }
   } else if (!__isfdopen(fd)) {
     rc = ebadf();
