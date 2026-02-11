@@ -37,11 +37,7 @@ __gc:	beg
 
 #ifdef __x86_64__
 
-#if SupportsXnu() || SupportsWindows()
 	call	__get_tls_rcx
-#else
-	mov	%fs:0x30,%rcx
-#endif
 	mov	0x48(%rcx),%rcx			// tls::garbages
 	decl	(%rcx)				// --g->i
 	mov	(%rcx),%r8d			// r8 = g->i

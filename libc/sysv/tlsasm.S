@@ -28,13 +28,13 @@
 	.section \section,"ax",@progbits
 	.align	16
 \name:	mov	__hostos(%rip),%\reg32
-	test	$_HOSTWINDOWS|_HOSTXNU,%\reg32
+	test	$_HOSTWINDOWS|_HOSTXNU|_HOSTLINUX|_HOSTFREEBSD,%\reg32
 	jnz	1f
-	mov	%fs:0x30,%\reg64 // Linux, FreeBSD, OpenBSD, NetBSD
+	mov	%fs:0x30,%\reg64 // OpenBSD, NetBSD
 	ret
 1:	test	$_HOSTWINDOWS,%\reg32
 	jnz	1f
-	mov	%gs:0x30,%\reg64 // XNU
+	mov	%gs:0x30,%\reg64 // Linux, FreeBSD, XNU
 	ret
 1:	mov	__tls_index(%rip),%\reg32	// Windows
 	mov	%gs:0x1480(,%\reg64,8),%\reg64	// Hooray!
@@ -61,13 +61,13 @@
 	.macro	define_tls_adder name:req reg64:req tmp64:req tmp32:req
 	.section .privileged.\name,"ax",@progbits
 	.align	16
-\name:	testb	$_HOSTWINDOWS|_HOSTXNU,__hostos(%rip)
+\name:	testb	$_HOSTWINDOWS|_HOSTXNU|_HOSTLINUX|_HOSTFREEBSD,__hostos(%rip)
 	jnz	1f
-	add	%fs:0x30,%\reg64 // Linux, FreeBSD, OpenBSD, NetBSD
+	add	%fs:0x30,%\reg64 // OpenBSD, NetBSD
 	ret
 1:	testb	$_HOSTWINDOWS,__hostos(%rip)
 	jnz	1f
-	add	%gs:0x30,%\reg64 // XNU
+	add	%gs:0x30,%\reg64 // Linux, FreeBSD, XNU
 	ret
 1:	push	%\tmp64
 	mov	__tls_index(%rip),%\tmp32	// Windows

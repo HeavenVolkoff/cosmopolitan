@@ -522,6 +522,12 @@ static errno_t CloneSilicon(int (*fn)(void *), char *stk, size_t stksz,
 ////////////////////////////////////////////////////////////////////////////////
 // GNU/SYSTEMD
 
+struct LinuxCloneArgs {
+  int (*func)(void *);
+  void *arg;
+  char *tls;
+};
+
 int sys_clone_linux(int flags,         // rdi
                     long sp,           // rsi
                     atomic_int *ptid,  // rdx
@@ -530,12 +536,28 @@ int sys_clone_linux(int flags,         // rdi
                     void *func,        // r9
                     void *arg);        // 8(rsp)
 
+dontinstrument static int AmdLinuxThreadEntry(void *arg) {
+  struct LinuxCloneArgs *wt = arg;
+#if defined(__x86_64__)
+  sys_set_tls(ARCH_SET_GS, wt->tls);
+#endif
+  return wt->func(wt->arg);
+}
+
 static int CloneLinux(int (*func)(void *), char *stk, size_t stksz, int flags,
                       void *arg, void *tls, atomic_int *ptid,
                       atomic_int *ctid) {
   long sp = (intptr_t)stk + stksz;
 #if defined(__x86_64__)
+  sp -= sizeof(struct LinuxCloneArgs);
+  sp &= -alignof(struct LinuxCloneArgs);
+  struct LinuxCloneArgs *wt = (struct LinuxCloneArgs *)sp;
   sp &= -16;  // align the stack
+  wt->arg = arg;
+  wt->tls = tls;
+  wt->func = func;
+  func = AmdLinuxThreadEntry;
+  arg = wt;
 #elif defined(__aarch64__)
   sp &= -128;  // for kernels <=4.6
 #endif

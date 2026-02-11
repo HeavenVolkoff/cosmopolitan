@@ -56,11 +56,7 @@ foreign_tramp:
 	mov	%rax,-0xc0(%rbp)
 
 //	switch to foreign tls
-#if SupportsXnu() || SupportsWindows()
 	call	__get_tls_rax
-#else
-	mov	%fs:0x30,%rax
-#endif
 	mov	%rax,-0xc8(%rbp)
 	mov	__foreign+8(%rip),%rdi
 	call	__set_tls

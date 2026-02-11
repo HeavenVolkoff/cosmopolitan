@@ -361,13 +361,13 @@ Here's the TLS memory layout on x86_64:
 ```
                           __get_tls()
                               │
-                             %fs Linux/FreeBSD/NetBSD/OpenBSD
+                             %fs NetBSD/OpenBSD
            _Thread_local      │
     ┌───┬──────────┬──────────┼───┐
     │pad│  .tdata  │  .tbss   │tib│
     └───┴──────────┴──────────┼───┘
                               │
-                 Windows/Mac %gs
+   Linux/FreeBSD/Windows/Mac %gs
 ```
 
 Quite possibly the greatest challenge in Actually Portable Executable

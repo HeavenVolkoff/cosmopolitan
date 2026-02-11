@@ -75,7 +75,7 @@ extern char __tls_enabled;
 void __set_tls(struct CosmoTib *) libcesque;
 struct CosmoTib *__get_tls_rax(void) dontthrow pureconst;
 
-#if defined(__x86_64__) && (SupportsWindows() || SupportsXnu())
+#if defined(__x86_64__)
 #define __get_tls_privileged() __get_tls_rax()
 #else
 #define __get_tls_privileged() __get_tls()
@@ -87,12 +87,8 @@ struct CosmoTib *__get_tls_rax(void) dontthrow pureconst;
  * This can't be used in privileged functions.
  */
 forceinline pureconst struct CosmoTib *__get_tls(void) {
-#ifdef __chibicc__
+#ifdef __x86_64__
   return __get_tls_rax();
-#elif __x86_64__
-  struct CosmoTib *__tib;
-  __asm__("movq\t%%fs:0, %0" : "=r"(__tib));
-  return __tib;
 #elif defined(__aarch64__)
   register struct CosmoTib *__tls __asm__("x28");
   return __tls - 1;
