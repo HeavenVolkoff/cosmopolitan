@@ -323,7 +323,7 @@ int cosmo_futex_wait (atomic_int *w, int expect, char pshare,
 			if (timeout) {
 				us = cosmo_time_64to32u (timespec_tomicros (*timeout));
 			} else {
-				us = -1u;
+				us = 0u;
 			}
 			rc = ulock_wait (op, w, expect, us);
 			if (rc > 0) rc = 0; // don't care about #waiters
