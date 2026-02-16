@@ -4,28 +4,30 @@
 # Default Mode
 #
 #   - `make`
-#   - Optimized
-#   - Backtraces
-#   - Syscall tracing
-#   - Function tracing
+#   - More optimized
+#   - Reasonably small
+#   - Numeric backtraces
+#   - No DWARF data bloat
+#   - Toilsome debuggability
+#   - assert() statements removed
+#   - DCHECK_xx() statements removed
+#   - No memory corruption detection
+#   - CHECK_xx() won't leak strings into binary
 #
 ifeq ($(MODE),)
-ENABLE_FTRACE = 1
-CONFIG_OFLAGS ?= -g -ggdb
 CONFIG_CCFLAGS += -O2 $(BACKTRACES)
-CONFIG_CPPFLAGS += -DSYSDEBUG
+CONFIG_CPPFLAGS += -DNDEBUG -DDWARFLESS
+PYFLAGS += -O1
 endif
 ifeq ($(MODE), x86_64)
-ENABLE_FTRACE = 1
-CONFIG_OFLAGS ?= -g -ggdb
 CONFIG_CCFLAGS += -O2 $(BACKTRACES)
-CONFIG_CPPFLAGS += -DSYSDEBUG
+CONFIG_CPPFLAGS += -DNDEBUG -DDWARFLESS
+PYFLAGS += -O1
 endif
 ifeq ($(MODE), aarch64)
-ENABLE_FTRACE = 1
-CONFIG_OFLAGS ?= -g -ggdb
 CONFIG_CCFLAGS += -O2 $(BACKTRACES)
-CONFIG_CPPFLAGS += -DSYSDEBUG
+CONFIG_CPPFLAGS += -DNDEBUG -DDWARFLESS
+PYFLAGS += -O1
 endif
 
 # Zero Optimization Mode
