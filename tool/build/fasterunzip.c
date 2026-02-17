@@ -47,15 +47,16 @@ static const char *const help = "\
 Copyright 2025 Justine Alexandra Roberts Tunney - ISC license\n\
 Cosmopolitan's multithreaded unzip command. Usage:\n\
 fasterunzip [FLAGS...] ARCHIVE [ASSET...]\n\
-  -j    remove directory components from extracted assets\n\
-  -D    skip timestamp restoration on directories\n\
-  -DD   skip timestamp restoration on dirs/files\n\
-  -a    auto-convert line endings of text files\n\
-  -K    preserve setuid/setgid/sticky bits\n\
-  -aa   always auto-convert line endings\n\
-  -f    freshen existing files on disk\n\
-  -h    show this help information\n\
-  -v    increase verbosity\n\
+  -j     remove directory components from extracted assets\n\
+  -D     skip timestamp restoration on directories\n\
+  -DD    skip timestamp restoration on dirs/files\n\
+  -a     auto-convert line endings of text files\n\
+  -K     preserve setuid/setgid/sticky bits\n\
+  -aa    always auto-convert line endings\n\
+  -f     freshen existing files on disk\n\
+  -d DIR extract files into output directory\n\
+  -h     show this help information\n\
+  -v     increase verbosity\n\
 \n";
 
 enum Newlines {
@@ -640,7 +641,7 @@ void *Worker(void *arg) {
 void Unzip(const char *zpath) {
   // open executable
   int64_t zsize;
-  if ((zfd = open(zpath, O_RDONLY)) == -1)
+  if (zfd == -1 && (zfd = open(zpath, O_RDONLY)) == -1)
     DieSys(zpath);
   if ((zsize = lseek(zfd, 0, SEEK_END)) == -1)
     DieSys(zpath);
@@ -782,15 +783,19 @@ void Unzip(const char *zpath) {
 }
 
 int main(int argc, char *argv[]) {
+  char *outdir = 0;
 
   // get prog
   prog = argv[0];
   if (!prog)
     prog = "fasterunzip";
 
+  // initialize global
+  zfd = -1;
+
   // get flags
   int opt;
-  while ((opt = getopt(argc, argv, "afhjvDK")) != -1) {
+  while ((opt = getopt(argc, argv, "afhjvDKd:")) != -1) {
     switch (opt) {
       case 'a':
         ++autolines;
@@ -806,6 +811,9 @@ int main(int argc, char *argv[]) {
         break;
       case 'D':
         ++skiptimes;
+        break;
+      case 'd':
+        outdir = optarg;
         break;
       case 'v':
         ++verbosity;
@@ -827,6 +835,16 @@ int main(int argc, char *argv[]) {
   // get optional list of desired names to extract
   for (int i = optind; i < argc; ++i)
     AddDesire(argv[i]);
+
+  // change directory
+  if (outdir) {
+    if ((zfd = open(archive, O_RDONLY)) == -1)
+      DieSys(archive);
+    if (makedirs(outdir, 0755))
+      DieSys(outdir);
+    if (chdir(outdir))
+      DieSys(outdir);
+  }
 
   // unzip archive
   Unzip(archive);

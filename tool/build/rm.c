@@ -39,7 +39,7 @@ FLAGS\n\
 \n\
   -h        help\n\
   -f        force\n\
-  -f or -R  recursive\n\
+  -r or -R  recursive\n\
   -d        remove empty dirs\n\
 \n"
 
