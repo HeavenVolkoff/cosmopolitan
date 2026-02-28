@@ -11,7 +11,7 @@
  * Supported Platforms Tuning Knob (Runtime & Compile-Time)
  * Tuning this bitmask will remove platform polyfills at compile-time.
  */
-#define SUPPORT_VECTOR 255
+#define SUPPORT_VECTOR (_HOSTLINUX | _HOSTWINDOWS | _HOSTXNU | _HOSTOPENBSD | _HOSTFREEBSD | _HOSTNETBSD)
 #else
 #define SUPPORT_VECTOR (_HOSTLINUX | _HOSTXNU | _HOSTFREEBSD)
 #endif
