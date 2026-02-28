@@ -218,7 +218,8 @@ endif
 ifeq ($(MODE), tiny)
 CONFIG_CPPFLAGS +=			\
 	-DTINY				\
-	-DNDEBUG
+	-DNDEBUG			\
+	-DIM_FEELING_NAUGHTY
 CONFIG_CCFLAGS +=			\
 	-Os				\
 	-fno-align-functions		\
@@ -236,7 +237,8 @@ endif
 ifeq ($(MODE), x86_64-tiny)
 CONFIG_CPPFLAGS +=			\
 	-DTINY				\
-	-DNDEBUG
+	-DNDEBUG			\
+	-DIM_FEELING_NAUGHTY
 CONFIG_CCFLAGS +=			\
 	-Os				\
 	-fno-align-functions		\
@@ -255,7 +257,8 @@ ifeq ($(MODE), aarch64-tiny)
 # TODO(jart): -mcmodel=tiny
 CONFIG_CPPFLAGS +=			\
 	-DTINY				\
-	-DNDEBUG
+	-DNDEBUG			\
+	-DIM_FEELING_NAUGHTY
 CONFIG_CCFLAGS +=			\
 	-Os				\
 	-fno-align-functions		\

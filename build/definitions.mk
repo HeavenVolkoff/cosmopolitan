@@ -79,8 +79,7 @@ TRADITIONAL =								\
 DEFAULT_CCFLAGS +=							\
 	-Wall								\
 	-Werror								\
-	-fno-omit-frame-pointer						\
-	-frecord-gcc-switches
+	-fno-omit-frame-pointer
 
 DEFAULT_COPTS ?=							\
 	-fno-ident							\
